@@ -13,11 +13,12 @@ CurrentTool = "SW"
 function ToolC()
 	if not Player.Character:FindFirstChild("ClassicSword") then
 		EquipTool:FireServer({Name = ToolNames[1]})
+		repeat wait() until not Player.Character:FindFirstChild("ClassicSword")
 		CurrentTool = Player.Character:FindFirstChild("ClassicSword").Handle
 	else
 		return
 	end
-	if not Player.Character:FindFirstChild(ToolNames[2]) then
+	--[[if not Player.Character:FindFirstChild(ToolNames[2]) then
 		EquipTool:FireServer({Name = ToolNames[2]})
 		if Player.Character:FindFirstChild(ToolNames[2]).ClassName ~= "Tool" then CurrentTool = Player.Character:FindFirstChild(ToolNames[2]) else CurrentTool = Player.Character:FindFirstChild(ToolNames[2]).Handle end
 	else
@@ -28,7 +29,7 @@ function ToolC()
 		if Player.Character:FindFirstChild(ToolNames[3]).ClassName ~= "Tool" then CurrentTool = Player.Character:FindFirstChild(ToolNames[3]) else CurrentTool = Player.Character:FindFirstChild(ToolNames[3]).Handle end
 	else
 		return
-	end
+	end]]
 end
 
 function NearestMob()
