@@ -77,18 +77,15 @@ function F1()
 end
 
 q = UserInputService.InputBegan:Connect(function(key)
-	if not UserInputService:GetFocusedTextBox() and key == KillClickKey then
+	if not UserInputService:GetFocusedTextBox() and key.KeyCode == KillClickKey then
 		F1()
 	end
 end)
 
 w = UserInputService.InputBegan:Connect(function(key)
-	if not UserInputService:GetFocusedTextBox() and key == closekey then
+	if not UserInputService:GetFocusedTextBox() and key.KeyCode == closekey then
 		print("SUCCESSFLY CLOSED")
 		w:Disconnect()
 		q:Disconnect()
 	end
 end)
-
-wait(1)
-F1()
