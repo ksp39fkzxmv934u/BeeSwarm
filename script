@@ -47,13 +47,14 @@ function NearestMob()
 			end
 		end
 	end
-	if data[1] == nil then return false end
+	if data[1] == nil then print("No mob founded"); return false end
+	print("Mob founded : "..tostring(data[1].Name))
 	return data
 end
 
 q = UserInputService.InputBegan:Connect(function(key)
 	if not UserInputService:GetFocusedTextBox() and key == KillClickKey then
-		if Player.Character and Player.Character:FindFirstChild("Humanoid") and Player.Character.Humanoid.Health > 0 then
+		if Player.Character then
 			ToolC()
 			local x = NearestMob()
 			if x then
