@@ -32,7 +32,7 @@ function ToolC()
 end
 
 function NearestMob()
-	local data = {nil, 9999, nil}
+	local data = {nil, 999999, nil}
 	for _, v in pairs(workspace.Monsters:GetChildren()) do
 		if v:FindFirstChild("SlimeMonster") then
 			if (Player.Character.HumanoidRootPart.Position - v.SlimeMonster.Blob2.Position).Magnitude < data[2] then
@@ -53,28 +53,32 @@ function NearestMob()
 	return data
 end
 
-q = UserInputService.InputBegan:Connect(function(key)
-	if not UserInputService:GetFocusedTextBox() and key == KillClickKey then
-		if Player.Character then
-			ToolC()
-			local x = NearestMob()
-			if x then
-				if x[3] == "Slime" then
-					firetouchinterest(CurrentTool, x[1].SlimeMonster.Blob2, 1)
-					task.wait(0.05)
-					ToolUseEvent:FireServer()
-					task.wait(0.05)
-					firetouchinterest(CurrentTool, x[1].SlimeMonster.Blob2, 0)
-				end
-				if x[3] == "Zombie" then
-					firetouchinterest(CurrentTool, x[1].HumanoidRootPart, 1)
-					task.wait(0.05)
-					ToolUseEvent:FireServer()
-					task.wait(0.05)
-					firetouchinterest(CurrentTool, x[1].HumanoidRootPart, 0)
-				end
+function F1()
+	if Player.Character then
+		ToolC()
+		local x = NearestMob()
+		if x then
+			if x[3] == "Slime" then
+				firetouchinterest(CurrentTool, x[1].SlimeMonster.Blob2, 1)
+				task.wait(0.05)
+				ToolUseEvent:FireServer()
+				task.wait(0.05)
+				firetouchinterest(CurrentTool, x[1].SlimeMonster.Blob2, 0)
+			end
+			if x[3] == "Zombie" then
+				firetouchinterest(CurrentTool, x[1].HumanoidRootPart, 1)
+				task.wait(0.05)
+				ToolUseEvent:FireServer()
+				task.wait(0.05)
+				firetouchinterest(CurrentTool, x[1].HumanoidRootPart, 0)
 			end
 		end
+	end
+end
+
+q = UserInputService.InputBegan:Connect(function(key)
+	if not UserInputService:GetFocusedTextBox() and key == KillClickKey then
+		F1()
 	end
 end)
 
@@ -85,3 +89,6 @@ w = UserInputService.InputBegan:Connect(function(key)
 		q:Disconnect()
 	end
 end)
+
+wait(1)
+F1()
