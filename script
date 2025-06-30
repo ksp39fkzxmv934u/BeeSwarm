@@ -10,9 +10,9 @@ closekey = Enum.KeyCode.L
 
 CurrentTool = "SW"
 function ToolC()
-	if not Player.Character:FindFirstChild(ToolNames[1]) then
+	if not Player.Character:FindFirstChild("ClassicSword") then
 		EquipTool:FireServer({Name = ToolNames[1]})
-		if Player.Character:FindFirstChild(ToolNames[1]).ClassName ~= "Tool" then CurrentTool = Player.Character:FindFirstChild(ToolNames[1]) else CurrentTool = Player.Character:FindFirstChild(ToolNames[1]).Handle end
+		CurrentTool = Player.Character:FindFirstChild("ClassicSword").Handle
 	else
 		return
 	end
