@@ -1,0 +1,85 @@
+if not firetouchinterest then print("firetouchinterest is missing");return end
+Player = game.Players.LocalPlayer
+ToolUseEvent = game.ReplicatedStorage.Events.ToolCollect
+EquipTool = game.ReplicatedStorage.Events.PlayerActivesCommand
+UserInputService = game:GetService("UserInputService")
+ToolNames = {"Sword", "Firebrand", "Illumina"}
+
+KillClickKey = Enum.KeyCode.N
+closekey = Enum.KeyCode.L
+
+CurrentTool = "SW"
+function ToolC()
+	if not Player.Character:FindFirstChild(ToolNames[1]) then
+		EquipTool:FireServer({Name = ToolNames[1]})
+		if Player.Character:FindFirstChild(ToolNames[1]).ClassName ~= "Tool" then CurrentTool = Player.Character:FindFirstChild(ToolNames[1]) else CurrentTool = Player.Character:FindFirstChild(ToolNames[1]).Handle end
+	else
+		return
+	end
+	if not Player.Character:FindFirstChild(ToolNames[2]) then
+		EquipTool:FireServer({Name = ToolNames[2]})
+		if Player.Character:FindFirstChild(ToolNames[2]).ClassName ~= "Tool" then CurrentTool = Player.Character:FindFirstChild(ToolNames[2]) else CurrentTool = Player.Character:FindFirstChild(ToolNames[2]).Handle end
+	else
+		return
+	end
+	if not Player.Character:FindFirstChild(ToolNames[3]) then
+		EquipTool:FireServer({Name = ToolNames[3]})
+		if Player.Character:FindFirstChild(ToolNames[3]).ClassName ~= "Tool" then CurrentTool = Player.Character:FindFirstChild(ToolNames[3]) else CurrentTool = Player.Character:FindFirstChild(ToolNames[3]).Handle end
+	else
+		return
+	end
+end
+
+function NearestMob()
+	local data = {nil, 9999, nil}
+	for _, v in pairs(workspace.Monsters:GetChildren()) do
+		if v:FindFirstChild("SlimeMonster") then
+			if (Player.Character.HumanoidRootPart.Position - v.SlimeMonster.Blob2.Position).Magnitude < data[2] then
+				data[1] = v
+				data[2] = (Player.Character.HumanoidRootPart.Position - v.SlimeMonster.Blob2.Position).Magnitude
+				data[3] = "Slime"
+			end
+		elseif v:FindFirstChild("HumanoidRootPart") then
+			if (Player.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude < data[2] then
+				data[1] = v
+				data[2] = (Player.Character.HumanoidRootPart.Position - v.HumanoidRootPart.Position).Magnitude
+				data[3] = "Zombie"
+			end
+		end
+	end
+	if data[1] == nil then return false end
+	return data
+end
+
+q = UserInputService.InputBegan:Connect(function(key)
+	if not UserInputService:GetFocusedTextBox() and key == KillClickKey then
+		if Player.Character and Player.Character:FindFirstChild("Humanoid") and Player.Character.Humanoid.Health > 0 then
+			ToolC()
+			local x = NearestMob()
+			if x then
+				if x[3] == "Slime" then
+					firetouchinterest(CurrentTool, x[1].SlimeMonster.Blob2, 1)
+					task.wait(0.05)
+					ToolUseEvent:FireServer()
+					task.wait(0.05)
+					firetouchinterest(CurrentTool, x[1].SlimeMonster.Blob2, 0)
+				end
+				if x[3] == "Zombie" then
+					firetouchinterest(CurrentTool, x[1].HumanoidRootPart, 1)
+					task.wait(0.05)
+					ToolUseEvent:FireServer()
+					task.wait(0.05)
+					firetouchinterest(CurrentTool, x[1].HumanoidRootPart, 0)
+				end
+			end
+		end
+	end
+end)
+
+w = UserInputService.InputBegan:Connect(function(key)
+	if not UserInputService:GetFocusedTextBox() and key == closekey then
+		print("SUCCESSFLY CLOSED")
+		w:Disconnect()
+		q:Disconnect()
+	end
+end)
