@@ -1,5 +1,5 @@
 if not firetouchinterest then print("firetouchinterest is missing");return end
-print("Version 1.0")
+print("Version 1.01")
 Player = game.Players.LocalPlayer
 ToolUseEvent = game.ReplicatedStorage.Events.ToolCollect
 EquipTool = game.ReplicatedStorage.Events.PlayerActivesCommand
