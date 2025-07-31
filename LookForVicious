@@ -1,1 +1,156 @@
-"10 minutes"
+if not game:IsLoaded() then
+	game.Loaded:Wait()
+end
+
+print("Version 1.04")
+TeleportService = game:GetService("TeleportService")
+HttpService = game:GetService("HttpService")
+GuiLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/ksp39fkzxmv934u/GuiLibrary/refs/heads/main/script"))()
+CoreGui = game.CoreGui
+HTTPRequest = (http and http.request) or http_request or request or HttpPost
+hs = game:GetService("HttpService")
+webhook = "YOURWEBHOOKHERE"
+RunService = game:GetService("RunService")
+PositionsF = {
+	["Dandelion field"] = Vector3.new(-30, 2.25, 222),
+	["Sunflower field"] = Vector3.new(-214, 2.25, 182),
+	["Clover field"] = Vector3.new(154, 31, 190),
+	["Blue flower field"] = Vector3.new(146, 2, 98),
+	["Spider field"] = Vector3.new(-42, 18.3720875, 2),
+	["Strawberry field"] = Vector3.new(-178, 18.3822384, -2),
+	["Bamboo field"] = Vector3.new(126, 18.4219551, -22),
+	["Pine tree field"] = Vector3.new(-318, 66.25, -170),
+	["Pineapple field"] = Vector3.new(262, 66.3799973, -202),
+	["Cactus field"] = Vector3.new(-190, 66.2500153, -102),
+	["Pumpkin field"] = Vector3.new(-182, 66.2500153, -186),
+	["Stump field"] = Vector3.new(426, 94.3710022, -162),
+	["Rose field"] = Vector3.new(-326, 18.3052464, 130),
+	["Coconut field"] = Vector3.new(-254, 69.7207947, 466),
+	["Pepper field"] = Vector3.new(-494, 121.451508, 530),
+	["Mountain field"] = Vector3.new(78, 174.250015, -154)
+}
+pp = {"Desc", "Asc"}
+
+function SwitchToAscesendingServer()
+	local servers = {}
+	local req = game:HttpGet("https://games.roblox.com/v1/games/" .. game.PlaceId .. "/servers/Public?sortOrder=Desc&limit=100&excludeFullGames=true")
+	local body = HttpService:JSONDecode(req)
+
+	if body and body.data then
+		for i, v in next, body.data do
+			if type(v) == "table" and tonumber(v.playing) and tonumber(v.maxPlayers) and v.playing < v.maxPlayers and v.id ~= game.JobId then
+				table.insert(servers, 1, v.id)
+			end
+		end
+	end
+
+	if #servers > 0 then
+		TeleportService:TeleportToPlaceInstance(game.PlaceId, servers[math.random(1, #servers)], game.Players.LocalPlayer)
+	else
+		return false
+	end
+end
+
+RandomNameFunction = GuiLibrary.RandomName
+MainGui = GuiLibrary.ScreenGUI({
+	Name = "KIRKATMRUS",
+	ResetOnSpawn = false,
+	Enabled = false,
+	Parent = CoreGui
+})
+MainFrame = GuiLibrary.Frame({
+	Name = RandomNameFunction(),
+	AnchorPoint = Vector2.new(.5, .5),
+	BackgroundColor3 = Color3.new(0, 0, 0),
+	Position = UDim2.new(.5, 0, .5, 0),
+	Size = UDim2.new(0, 300, 0, 150),
+	ZIndex = 2,
+	Parent = MainGui,
+	Draggable_ = true
+})
+MainFrameUiCorner = GuiLibrary.UICorner({
+	Name = RandomNameFunction(),
+	CornerRadius = UDim.new(0, 12),
+	Parent = MainFrame
+})
+NameTextLabel = GuiLibrary.TextLabel({
+	Name = RandomNameFunction(),
+	BackgroundTransparency = 1,
+	Position = UDim2.new(0, 0, 0, 0),
+	Size = UDim2.new(0, 300, 0, 50),
+	["Font"] = Enum.Font.FredokaOne,
+	Text = "Vicious bee found",
+	ZIndex = 2,
+	TextColor3 = Color3.new(1, 1, 1),
+	TextScaled = true,
+	Parent = MainFrame
+})
+ClickToContinueButton = GuiLibrary.TextButton({
+	Name = RandomNameFunction(),
+	BackgroundTransparency = 0,
+	AnchorPoint = Vector2.new(.5, .5),
+	Position = UDim2.new(0.5, 0, 0.667, 0),
+	Size = UDim2.new(0, 200, 0, 50),
+	["Font"] = Enum.Font.FredokaOne,
+	Text = "Continue",
+	ZIndex = 2,
+	TextColor3 = Color3.new(0.333333, 1, 0),
+	TextScaled = true,
+	Parent = MainFrame
+})
+
+Cam = workspace.CurrentCamera
+function CameraS()
+	Cam.CameraType = Enum.CameraType.Scriptable
+	Cam.CFrame = CFrame.lookAt(k.Position + Vector3.new(30, 20, 0), k.Position)
+end
+
+ClickToContinueButton.MouseButton1Click:Connect(function()
+	SwitchToAscesendingServer()
+end)
+
+wait(1)
+
+function CheckField()
+	max = {"str", 99999999}
+	for name,vec in PositionsF do
+		if (workspace.Particles.WTs.WaitingThorn.Position - vec).Magnitude < max[2] then
+			max[1] = name
+			max[2] = (workspace.Particles.WTs.WaitingThorn.Position - vec).Magnitude
+		end
+	end
+	return max[1]
+end
+
+if workspace.Particles.WTs:FindFirstChild("WaitingThorn") then
+	local position = workspace.Particles.WTs.WaitingThorn.Position
+	k = Instance.new("Part")
+	k.Size = Vector3.new(2, 8, 2)
+	k.CanCollide = false
+	k.Anchored = true
+	k.Position = position
+	k.Parent = workspace
+	i = Instance.new("Highlight")
+	i.FillTransparency = 0
+	i.Parent = k
+	wait(2)
+	RunService.Heartbeat:Connect(CameraS)
+	MainGui.Enabled = true
+	HTTPRequest({Url = webhook, Method = "POST", Headers = {["Content-Type"] = "application/json"}, Body = hs:JSONEncode({["content"] = "Vicious bee found in ".. CheckField() .. ". JobId: " .. game.JobId})})
+	for i = 15, 0, -1 do
+		ClickToContinueButton.Text = "Continue ("..tostring(i)..")"
+		wait(1)
+	end
+	print("TELEPORTING...")
+	while true do
+		SwitchToAscesendingServer()
+		wait(15)
+	end
+else
+	print("NOT FOUND, SWITCHING SERVER")
+	wait(15)
+	while true do
+		SwitchToAscesendingServer()
+		wait(15)
+	end
+end
